@@ -30,7 +30,7 @@ while (true) {
   const hash = getHeadHash();
   console.log(hash, nonce);
 
-  if (hash.startsWith("0")) {
+  if (hash.startsWith("00")) {
     // We found a match!
     break;
   }
