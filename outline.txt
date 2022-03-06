@@ -1,0 +1,4 @@
+1. Show how git works through `git log`
+  - Point out hash, and contents.
+  - Point out the parent.
+2. Show node tools, and how to run bash commands in node.js.
