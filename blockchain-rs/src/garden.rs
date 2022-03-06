@@ -1,16 +1,23 @@
-use std::borrow::Cow;
+//! This file is the basis for garden-rs, a separate project where I'm building
+//! a distributed p2p garden experience: https://github.com/gregtatum/garden-rs/
+//!
+//! It demonstrates how to use the blockchain with Rust structs beyond a simple string.
 
+use crate::SerializedBytes;
 use bincode;
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 use uuid::Uuid;
 
-use crate::block_chain::SerializedBytes;
-
+/// Many types of events could be added here and stored on a block chain.
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub enum Event {
     CreatePlot(GardenPlot),
 }
 
+/// The Event must be able to be serialized in a consistent way. This is using
+/// the bincode serializer. However you could do other strategies like convert it
+/// to human readable JSON, and then serialize the bytes of the JSON.
 impl SerializedBytes for Event {
     fn serialized_bytes(&self) -> Cow<[u8]> {
         Cow::from(bincode::serialize(self).expect("Unable to serialize Event."))

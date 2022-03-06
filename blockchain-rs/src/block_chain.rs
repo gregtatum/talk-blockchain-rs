@@ -3,10 +3,10 @@ use std::{borrow::Cow, time::Duration};
 use crate::hash::Hash;
 
 use chrono::Utc;
-use rayon::prelude::*;
 use ring::digest::{Context, SHA256};
 use serde::{Deserialize, Serialize};
 
+/// This trait is required for any data to be stored on the block chain.
 pub trait BlockData:
     // A custom trait that will serialize the
     // data into consistent bytes.
@@ -86,7 +86,10 @@ where
 
     /// This is a highly optimized method for adding a payload and computing the proof
     /// of work.
+    #[cfg(feature = "parallelize")]
     fn add_payload_pow(&mut self, mut payload: BlockPayload<T>) {
+        use rayon::prelude::*;
+
         // If this code gets used for real, it would probably be worth hoisting this
         // higher in the app. As it is I don't care because I don't really plan on using
         // this beyond demos.
@@ -137,6 +140,24 @@ where
             payload,
             computation_time: start.elapsed(),
         });
+    }
+
+    /// This is a slow but simple version of the proof of work for the hash.
+    #[cfg(not(feature = "parallelize"))]
+    fn add_payload_pow(&mut self, mut payload: BlockPayload<T>) {
+        let start = std::time::Instant::now();
+        for proof_of_work in 0..u64::MAX {
+            payload.proof_of_work = proof_of_work;
+            let hash = payload.hash();
+            if hash.meets_proof_of_work(self.proof_of_work_size) {
+                self.blocks.push(Block {
+                    hash,
+                    payload,
+                    computation_time: start.elapsed(),
+                });
+                break;
+            }
+        }
     }
 
     // The public interface to add data. It calls out to the proper internal methods
@@ -291,6 +312,7 @@ where
     }
 
     // In order to speed up the proof of work hashing, only partially do the hashing work.
+    #[cfg(feature = "parallelize")]
     fn partial_hash(&self) -> Context {
         let mut context = Context::new(&SHA256);
         context.update(&self.parent.0);

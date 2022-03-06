@@ -3,9 +3,14 @@ use blockchain::BlockChain;
 // This example shows how to add blocks to the blockchain using proof of work.
 
 fn main() {
+    #[cfg(not(feature = "parallelize"))]
+    println!("Running serial proof work");
+    #[cfg(feature = "parallelize")]
+    println!("Running parallel proof work");
+
     // The number represents the proof of work. The work load increases according to:
     // 2^(n*8), so it increases quite dramatically.
-    let mut block_chain = BlockChain::<String>::new(2);
+    let mut block_chain = BlockChain::<String>::new(3);
 
     // Time how long it takes.
     let start = std::time::Instant::now();
