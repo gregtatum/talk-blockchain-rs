@@ -1,6 +1,6 @@
-# Building a Blockchain in Rust
+# Talk - Building a Blockchain in Rust
 
-
+https://docs.google.com/presentation/d/1Hj1hmaMEGPCYvBhhMYWXnmKy0_0A7iR00qa7tcbo4I8/edit?usp=sharing
 
 Run the git examples:
 
