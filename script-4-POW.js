@@ -14,12 +14,12 @@ function getHeadHash() {
   return run("git rev-parse HEAD").trim();
 }
 
-// Number used once.
-let nonce = 0;
-
 // Naively get a message for the commit.
 // Warning: This is not safe for untrusted input.
 const message = process.argv.slice(2).join(" ");
+
+// Number used once.
+let nonce = 0;
 
 console.log("Updating the hash with this message: " + message);
 
@@ -30,7 +30,7 @@ while (true) {
   const hash = getHeadHash();
   console.log(hash, nonce);
 
-  if (hash.startsWith("00")) {
+  if (hash.startsWith("0")) {
     // We found a match!
     break;
   }

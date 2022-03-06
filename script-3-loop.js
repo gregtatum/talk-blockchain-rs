@@ -26,4 +26,7 @@ for (let i = 0; i < 100; i++) {
   run(`git commit --amend -m "${message}\n\n${nonce}"`);
 
   console.log("Head hash:", getHeadHash());
+
+  // Get a new number
+  nonce++;
 }
